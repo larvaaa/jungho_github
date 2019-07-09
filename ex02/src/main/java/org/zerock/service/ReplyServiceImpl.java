@@ -16,6 +16,11 @@ public class ReplyServiceImpl implements ReplyService {
 	private ReplyMapper mapper;
 	private BoardMapper boardMapper;
 	
+	public ReplyServiceImpl(ReplyMapper mapper, BoardMapper boardMapper) {
+		this.mapper = mapper;
+		this.boardMapper = boardMapper;
+	}
+	
 	public ReplyMapper getMapper() {
 		return mapper;
 	}

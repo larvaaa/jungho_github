@@ -22,6 +22,10 @@ public class ReplyController {
 	
 	private ReplyService service;
 
+	public ReplyController(ReplyService service) {
+		this.service = service;
+	}
+	
 	public ReplyService getService() {
 		return service;
 	}

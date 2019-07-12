@@ -18,7 +18,8 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				Board List Page
-				<button id='regBtn' type="button" class="btn btn-xs pull-right">Register New Board</button>
+				<button id='regBtn' type="button" class="btn btn-xs pull-right">Register
+					New Board</button>
 			</div>
 
 			<!-- /.panel-heading -->
@@ -88,6 +89,20 @@
 				<div class='pull-right'>
 					<ul class="pagination">
 
+						<%--             <c:if test="${pageMaker.prev}">
+              <li class="paginate_button previous"><a href="#">Previous</a>
+              </li>
+            </c:if>
+
+            <c:forEach var="num" begin="${pageMaker.startPage}"
+              end="${pageMaker.endPage}">
+              <li class="paginate_button"><a href="#">${num}</a></li>
+            </c:forEach>
+
+            <c:if test="${pageMaker.next}">
+              <li class="paginate_button next"><a href="#">Next</a></li>
+            </c:if> --%>
+
 						<c:if test="${pageMaker.prev}">
 							<li class="paginate_button previous"><a
 								href="${pageMaker.startPage -1}">Previous</a></li>
@@ -104,6 +119,7 @@
 							<li class="paginate_button next"><a
 								href="${pageMaker.endPage +1 }">Next</a></li>
 						</c:if>
+
 
 					</ul>
 				</div>

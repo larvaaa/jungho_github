@@ -19,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -38,6 +39,8 @@ public class UploadController {
 
 	@GetMapping("/uploadForm")
 	public void uploadForm() {
+
+	
 	}
 
 	@PostMapping("/uploadFormAction")
@@ -52,16 +55,19 @@ public class UploadController {
 			try {
 				multipartFile.transferTo(saveFile);
 			} catch (Exception e) {
-
+				
 			} // end catch
 		} // end for
 
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/uploadAjax")
 	public void uploadAjax() {
 
 	}
+
+	
 
 	private String getFolder() {
 
@@ -74,6 +80,7 @@ public class UploadController {
 		return str.replace("-", File.separator);
 	}
 
+
 	private boolean checkImageType(File file) {
 
 		try {
@@ -82,6 +89,7 @@ public class UploadController {
 			return contentType.startsWith("image");
 
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -162,6 +170,7 @@ public class UploadController {
 			header.add("Content-Type", Files.probeContentType(file.toPath()));
 			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return result;
@@ -205,6 +214,7 @@ public class UploadController {
 	}
 	
 
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/deleteFile")
 	@ResponseBody
 	public ResponseEntity<String> deleteFile(String fileName, String type) {
@@ -233,5 +243,6 @@ public class UploadController {
 		return new ResponseEntity<String>("deleted", HttpStatus.OK);
 
 	}
+	
 
 }

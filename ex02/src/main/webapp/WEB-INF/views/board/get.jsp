@@ -2,6 +2,9 @@
   pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
 <%@include file="../includes/header.jsp"%>
 
 
@@ -48,7 +51,19 @@
         <a href="/board/list">List</a></button> --%>
 
 
-<button data-oper='modify' class="btn btn-default">Modify</button>
+<!-- <button data-oper='modify' class="btn btn-default">Modify</button>
+ -->
+        <sec:authentication property="principal" var="pinfo"/>
+
+        <sec:authorize access="isAuthenticated()">
+
+        <c:if test="${pinfo.username eq board.writer}">
+        
+        <button data-oper='modify' class="btn btn-default">Modify</button>
+        
+        </c:if>
+        </sec:authorize>
+
 <button data-oper='list' class="btn btn-info">List</button>
 
 <%-- <form id='operForm' action="/boad/modify" method="get">
@@ -168,10 +183,18 @@
         <i class="fa fa-comments fa-fw"></i> Reply
       </div> -->
       
-      <div class="panel-heading">
+<!--       <div class="panel-heading">
         <i class="fa fa-comments fa-fw"></i> Reply
         <button id='addReplyBtn' class='btn btn-primary btn-xs pull-right'>New Reply</button>
+      </div>      -->
+      
+      <div class="panel-heading">
+        <i class="fa fa-comments fa-fw"></i> Reply
+        <sec:authorize access="isAuthenticated()">
+        <button id='addReplyBtn' class='btn btn-primary btn-xs pull-right'>New Reply</button>
+        </sec:authorize>
       </div>      
+       
       
       
       <!-- /.panel-heading -->
@@ -357,16 +380,23 @@ $(document).ready(function () {
     });
     
     $("#addReplyBtn").on("click", function(e){
-      
-      modal.find("input").val("");
-      modalInputReplyDate.closest("div").hide();
-      modal.find("button[id !='modalCloseBtn']").hide();
-      
-      modalRegisterBtn.show();
-      
-      $(".modal").modal("show");
-      
-    });
+        
+        modal.find("input").val("");
+        modal.find("input[name='replyer']").val(replyer);
+        modalInputReplyDate.closest("div").hide();
+        modal.find("button[id !='modalCloseBtn']").hide();
+        
+        modalRegisterBtn.show();
+        
+        $(".modal").modal("show");
+        
+      });
+
+    
+    $(document).ajaxSend(function(e, xhr, options) { 
+        xhr.setRequestHeader(csrfHeaderName, csrfTokenValue); 
+      }); 
+
     
 
     modalRegisterBtn.on("click",function(e){
@@ -417,6 +447,24 @@ $(document).ready(function () {
     	  
    	  var reply = {rno:modal.data("rno"), reply: modalInputReply.val()};
    	  
+   	  if(!replyer){
+ 		  alert("로그인후 수정이 가능합니다.");
+ 		  modal.modal("hide");
+ 		  return;
+ 	  }
+ 	  
+ 	  var originalReplyer = modalInputReplyer.val();
+ 	  
+ 	  console.log("Original Replyer: " + originalReplyer);
+ 	  
+ 	  if(replyer  != originalReplyer){
+ 		  
+ 		  alert("자신이 작성한 댓글만 수정이 가능합니다.");
+ 		  modal.modal("hide");
+ 		  return;
+ 		  
+ 	  }
+   	  
    	  replyService.update(reply, function(result){
    	        
    	    alert(result);
@@ -431,8 +479,30 @@ $(document).ready(function () {
    	modalRemoveBtn.on("click", function (e){
    	  
    	  var rno = modal.data("rno");
+
+   	  console.log("RNO: " + rno);
+   	  console.log("REPLYER: " + replyer);
    	  
-   	  replyService.remove(rno, function(result){
+   	  if(!replyer){
+   		  alert("로그인후 삭제가 가능합니다.");
+   		  modal.modal("hide");
+   		  return;
+   	  }
+   	  
+   	  var originalReplyer = modalInputReplyer.val();
+   	  
+   	  console.log("Original Replyer: " + originalReplyer);
+   	  
+   	  if(replyer  != originalReplyer){
+   		  
+   		  alert("자신이 작성한 댓글만 삭제가 가능합니다.");
+   		  modal.modal("hide");
+   		  return;
+   		  
+   	  }
+   	  
+   	  
+   	  replyService.remove(rno, originalReplyer, function(result){
    	        
    	      alert(result);
    	      modal.modal("hide");
@@ -441,6 +511,19 @@ $(document).ready(function () {
    	  });
    	  
    	});
+
+   	
+    var replyer = null;
+    
+    <sec:authorize access="isAuthenticated()">
+    
+    replyer = '<sec:authentication property="principal.username"/>';   
+    
+</sec:authorize>
+ 
+    var csrfHeaderName ="${_csrf.headerName}"; 
+    var csrfTokenValue="${_csrf.token}";
+
 
  
 });

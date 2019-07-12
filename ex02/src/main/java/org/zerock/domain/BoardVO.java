@@ -12,11 +12,20 @@ public class BoardVO {
 	private String writer;
 	private Date regdate;
 	private Date updateDate;
-
 	private int replyCnt;
-
 	private List<BoardAttachVO> attachList;
-
+	
+	/*public BoardVO(Long bno, String title, String content,String writer, Date regdate,Date updateDate,int replyCnt,List<BoardAttachVO> attachList) {
+		this.bno = bno;
+		this.title = title;
+		this.content = content;
+		this.writer = writer;
+		this.regdate = regdate;
+		this.updateDate = updateDate;
+		this.replyCnt = replyCnt;
+		this.attachList = attachList;
+	}*/
+	
 	public Long getBno() {
 		return bno;
 	}

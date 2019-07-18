@@ -7,4 +7,4 @@ portfolio
 2. boardproject
 
 
-thank you for coming!
+**thank you for coming!**
